@@ -1,0 +1,24 @@
+apiVersion: run.tanzu.vmware.com/v1alpha1      #TKG API endpoint
+kind: TanzuKubernetesCluster                   #required parameter
+metadata:
+  name: tkg-cluster-1                          #cluster name, user defined
+spec:
+  distribution:
+    version: v1.16.8+vmware.1-tkg.3.60d2ffd    #resolved kubernetes version
+  topology:
+    controlPlane:
+      count: 1                                 #number of control plane nodes
+      class: best-effort-small                 #vmclass for control plane nodes
+      storageClass: wcp-policy         #storageclass for control plane
+    workers:
+      count: 2                                 #number of worker nodes
+      class: best-effort-small                 #vmclass for worker nodes
+      storageClass: wcp-policy         #storageclass for worker nodes
+  settings:
+    network:
+      cni:
+        name: calico
+      services:
+        cidrBlocks: ["198.51.100.0/12"]        #Cannot overlap with Supervisor Cluster
+      pods:
+        cidrBlocks: ["192.0.2.0/16"]           #Cannot overlap with Supervisor Cluster
