@@ -49,6 +49,7 @@ spec:
     - port: 80
   selector:
     app: nsx-demo
+  type: LoadBalancer
 ---
 # This creates the K8s Ingress Controller
 apiVersion: extensions/v1beta1
@@ -57,7 +58,7 @@ metadata:
   name: nsx-demo-ingress
 spec:
   rules:
-  - host: nsx.demo.yves.local
+  - host: nsx.vmlab.local. # nsx.demo.yves.local
     http:
       paths:
       - path: /
