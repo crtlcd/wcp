@@ -32,26 +32,10 @@ spec:
     app: nsx-demo
   type: LoadBalancer
 ---
-apiVersion: v1
-kind: Pod
-metadata:
-  name: mgmtpod
-spec:
-  containers:
-  - name: ubuntu
-    image: tutum/ubuntu:trusty
-    imagePullPolicy: IfNotPresent
-    ports:
-    - name: ssh
-      containerPort: 22
-    env:
-    - name: ROOT_PASS
-      value: VMware1!
----
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: nsx-demo
+  name: nsx-demo-ingress
 spec:
   rules:
   - host: nsx.demo.yves.local
