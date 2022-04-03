@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: avi-demo-ingress2
+  name: avi-demo-ingress2
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: avi-demo-ingress2
+  template:
+    metadata:
+      labels:
+        app: avi-demo-ingress2
+    spec:
+      containers:
+      - env:
+        - name: hostinfo
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        image: dyadin/avi-demo
+        imagePullPolicy: IfNotPresent
+        name: avi-demo
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: avi-demo-ingress2
+  labels:
+    app: avi-demo-ingress2
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: avi-demo-ingress2
+  type: ClusterIP
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: avi
+  name: avi-demo-ingress2
+  namespace: default
+spec:
+  rules:
+  - host: ingress1.avi.corp.local
+    http:
+      paths: 
+      - path: /
+        backend:
+          serviceName: avi-demo-ingress2
+          servicePort: 80
+---
+apiVersion: ako.vmware.com/v1alpha1
+kind: HTTPRule
+metadata:
+   name: ingress1-http-rules
+spec:
+  fqdn: ingress1.avi.corp.local
+  paths:
+  - target: /
+    loadBalancerPolicy:
+      algorithm: LB_ALGORITHM_ROUND_ROBIN
+
+
+
+
+
+
